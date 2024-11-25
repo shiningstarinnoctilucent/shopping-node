@@ -9,9 +9,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Static files middleware
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+
+// Handle missing images
+app.use("/images", (req, res, next) => {
+    res.status(404).json({
+        error: "Image not found",
+        message: `The image ${req.path} does not exist`,
+    });
+});
+
 // Routes
 app.get("/", (req, res) => {
     res.send("Shopping API is running");
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Server internal error" });
 });
 
 const PORT = process.env.PORT || 3000;
