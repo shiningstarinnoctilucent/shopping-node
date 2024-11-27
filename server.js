@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const { connectDB } = require("./config/db");
 require("dotenv").config();
+const lessonsRoutes = require("./routes/lessons");
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use("/images", (req, res, next) => {
 });
 
 // Routes
+app.use("/api/lessons", lessonsRoutes);
+
 app.get("/", (req, res) => {
     res.send("Shopping API is running");
 });
