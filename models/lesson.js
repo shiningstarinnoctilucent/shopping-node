@@ -9,6 +9,7 @@ const LessonModel = {
         const lesson = {
             ...lessonData,
             space: Number(lessonData.space),
+            spaces: Number(lessonData.spaces),
             price: Number(lessonData.price),
             createdAt: new Date(),
         };
@@ -75,8 +76,23 @@ const LessonModel = {
         return result.value;
     },
 
-    async updateSpace(id, space) {
-        this.update(id, { space: space });
+    async updateSpace(id, spacesToReduce) {
+        const db = getDB();
+        const filter = { _id: new ObjectId(String(id)) };
+
+        // 先获取当前文档
+        const lesson = await db.collection(lessonCollection).findOne(filter);
+        if (!lesson) return null;
+
+        // 确保 spaces 是数值类型
+        const currentSpaces = Number(lesson.spaces);
+
+        const result = await db.collection(lessonCollection).findOneAndUpdate(
+            filter,
+            { $set: { spaces: currentSpaces - spacesToReduce } }, // 使用 $set 而不是 $inc
+            { returnDocument: "after" }
+        );
+        return result;
     },
 };
 

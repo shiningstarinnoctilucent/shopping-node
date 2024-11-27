@@ -4,6 +4,7 @@ const path = require("path");
 const { connectDB } = require("./config/db");
 require("dotenv").config();
 const lessonsRoutes = require("./routes/lessons");
+const ordersRoutes = require("./routes/orders");
 
 const app = express();
 
@@ -23,7 +24,9 @@ app.use("/images", (req, res, next) => {
 });
 
 // Routes
+console.log("Registering routes...");
 app.use("/api/lessons", lessonsRoutes);
+app.use("/api/orders", ordersRoutes);
 
 app.get("/", (req, res) => {
     res.send("Shopping API is running");
