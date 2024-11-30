@@ -8,7 +8,6 @@ const LessonModel = {
         const db = getDB();
         const lesson = {
             ...lessonData,
-            space: Number(lessonData.space),
             spaces: Number(lessonData.spaces),
             price: Number(lessonData.price),
             createdAt: new Date(),
@@ -29,11 +28,6 @@ const LessonModel = {
                 { description: { $regex: queryParams.search, $options: "i" } },
                 { price: { $regex: queryParams.search, $options: "i" } },
             ];
-        }
-
-        // Specific field filtering
-        if (queryParams.keyword) {
-            filter.title = { $regex: queryParams.keyword, $options: "i" };
         }
 
         // Price range filtering
@@ -64,7 +58,7 @@ const LessonModel = {
 
         // Remove _id from updateData if present
         delete updateData._id;
-
+        updateData.updatedAt = new Date();
         const result = await db
             .collection(lessonCollection)
             .findOneAndUpdate(
@@ -73,7 +67,7 @@ const LessonModel = {
                 { returnDocument: "after" }
             );
 
-        return result.value;
+        return result;
     },
 
     async updateSpace(id, spacesToReduce) {
